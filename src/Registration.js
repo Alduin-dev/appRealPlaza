@@ -87,6 +87,7 @@ const Registration = () => {
                 <TextInput
                     onChangeText={(password) => setPassword(password)}
                     variant="standard"
+                    secureTextEntry={true}
                     style={{ margin: 1, width: 250 }}
                 />
 
