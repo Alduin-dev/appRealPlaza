@@ -84,13 +84,16 @@ const Registration = () => {
                     style={{ margin: 1, width: 250 }}
                 />
                 <Text style={{ fontWeight: '700', fontSize: 15, color: '#7300e0' }}>Contraseña</Text>
-                <TextInput
+                
+
+            </View>
+            <View>
+            <TextInput
                     onChangeText={(password) => setPassword(password)}
                     variant="standard"
                     secureTextEntry={true}
                     style={{ margin: 1, width: 250 }}
                 />
-
             </View>
             <TouchableOpacity
                 onPress={() => registerUser(email, password, firstName, lastName)}
