@@ -6,55 +6,15 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Accordion from 'react-native-collapsible/Accordion';
-import Collapsible from 'react-native-collapsible'
+import data from '../components/data';
+import { StatusBar } from 'expo-status-bar';
+
+
+
 
 const Dashboard = () => {
   const [name, setName] = useState('');
-  const [activeSections, setActiveSections] = useState('');
-  const [collapsed, setCollapsed] = useState(true)
-  const SECTIONS = [
-    {
-      title: 'Título del acordeón 1',
-      content: 'Contenido del acordeón 1',
-    },
-    {
-      title: 'Título del acordeón 2',
-      content: 'Contenido del acordeón 2',
-    },
-  ];
-
-  const renderHeader = (section, _, isActive) => {
-    return (
-      <TouchableOpacity
-        style={[
-          styles.accordionHeader,
-          isActive ? styles.accordionHeaderActive : null,
-        ]}
-        onPress={() => toggleSection(section)}
-      >
-        <Text style={styles.accordionHeaderText}>{section.title}</Text>
-      </TouchableOpacity>
-    );
-  };
-
-  const toggleSection = (section) => {
-    const isActive = activeSections.includes(section.content);
-    setActiveSections(
-      isActive
-        ? activeSections.filter((activeSection) => activeSection !== section.content)
-        : [...activeSections, section.content]
-        
-    );
-  };
-
-  const renderContent = (section) => {
-    return (
-      <View style={styles.accordionContent}>
-        <Text>{section.content}</Text>
-      </View>
-    );
-  };
+  const [currentIndex, setCurrentIndex] = useState(null)
 
   useEffect(() => {
     firebase
@@ -129,15 +89,43 @@ const Dashboard = () => {
           <Text style={{ padding: 5 }}>Envio</Text>
         </View>
       </View>
-      <View>
-        <Accordion
-          sections={SECTIONS}
-          activeSections={activeSections}
-          renderHeader={renderHeader}
-          renderContent={renderContent}
-          onChange={setActiveSections}
-        />
+
+      <View style={styles.viewaccordion}>
+        <StatusBar hidden />
+        {data.map(({bg, color, category, subCategories}, index) => {
+          return (
+            <TouchableOpacity 
+              key={category} 
+              onPress={() => {
+                setCurrentIndex(index === currentIndex ? null : index)
+              }} 
+              style={styles.cardContainer}
+              activeOpacity={0.9}
+            >
+              <View style={[styles.card, { backgroundColor: bg }]}>
+                <Text style={[styles.heading, { color }]}>{category}</Text>
+                {index === currentIndex && (
+                  <View style={styles.subCategoriesList}>
+                  {subCategories.map((subCategory) => (
+                    <Text
+                      key={subCategory} style={[styles.bodyaccordion, { color }]}
+                    >
+                      {subCategory}
+                    </Text>
+                  ))}
+                </View>
+                )} 
+
+              </View>
+            </TouchableOpacity>
+          );
+        })}
       </View>
+      
+
+
+
+
       <TouchableOpacity onPress={() => { firebase.auth().signOut() }} style={styles.button}>
         <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#fff' }}>
           Cerrar Sesión
@@ -155,9 +143,16 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     marginTop: 20,
   },
+  viewaccordion: {
+    flex:1,
+    backgroundColor: '#fff',
+    justifyContent: 'center'
+
+  },
   button: {
     marginTop: 50,
     marginLeft: 80,
+    marginBottom: 80,
     height: 70,
     width: 250,
     backgroundColor: '#7300e0',
@@ -165,18 +160,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 50,
   },
-  accordionHeader: {
-    padding: 10,
-    backgroundColor: '#eee',
+  cardContainer:{
+    flexGrow: 1,
   },
-  accordionHeaderActive: {
-    backgroundColor: '#ddd',
+  card: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
-  accordionHeaderText: {
-    fontWeight: 'bold',
+  heading: {
+    fontSize: 38,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: -2,
   },
-  accordionContent: {
-    padding: 10,
-    backgroundColor: '#f5f5f5',
+  bodyaccordion:{
+    fontSize: 20,
+    lineHeight: 20 * 1.5,
+    textAlign: 'left'
   },
 });
